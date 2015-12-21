@@ -3,7 +3,11 @@ var MINUTE_ROTATION = 360/60;
 var DAY_ROTATION = 360/12;
 var h, m, s, d;
 
-var hspeed, mspeed, dspeed, updateInterval;
+var hspeed, // 短針の移動速度
+		mspeed, // 長針の移動速度
+		dspeed, // 曜日表示の移動速度
+		pspeed, // 午前午後の切り替え速度
+		updateInterval;
 
 var isFastMode = true;
 var fastModeMilliSec = 1450730177066 + 14*60*60*1000;
@@ -36,12 +40,14 @@ function initSettings() {
 		hspeed = 300;
 		mspeed = 1;
 		dspeed = 600;
+		pspeed = 150;
 		updateInterval = 30;
 		$("#switch-item-demo").addClass("selected");
 	}	else {
 		hspeed = 1000;
 		mspeed = 1000;
 		dspeed = 1000;
+		pspeed = 500;
 		updateInterval = 1000;
 		$("#switch-item-now").addClass("selected");
 	}
@@ -95,7 +101,7 @@ function changeNumPlate() {
   setTimeout(function() {
   	var css = '<style id="num-plate-style" type="text/css">#hour:before{background-image: url("./img/01/hour_num_'+name+'.png");}</style>';
   	$('#num-plate-style').replaceWith($(css));
-  }, 500);
+  }, pspeed);
 }
 
 function minuteNeedle(baseRot, mRot) {
