@@ -9,9 +9,10 @@ var isFastMode = true;
 var fastModeMilliSec = 1450730177066 + 14*60*60*1000;
 
 $(function() {
+	isFastMode = checkFastMode();
 	if(isFastMode) { getFastModeDate(); }
 	else { getNowDate(); }
-	initNeedleSpeeds();
+	initSettings();
 	changeNumPlate();
 	minuteNeedle(0, m);
 	hourNeedle(0, h);
@@ -19,17 +20,30 @@ $(function() {
 	setInterval(clockUpdate, updateInterval);
 });
 
-function initNeedleSpeeds() {
+function checkFastMode() { 
+    var vars = [], hash; 
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&'); 
+    for(var i = 0; i < hashes.length; i++) { 
+        hash = hashes[i].split('='); 
+        vars.push(hash[0]); 
+        vars[hash[0]] = hash[1]; 
+    }
+    return hashes.length != 0 && vars["fast"] == "true"; 
+}
+
+function initSettings() {
 	if(isFastMode) {
 		hspeed = 300;
 		mspeed = 1;
 		dspeed = 600;
 		updateInterval = 30;
+		$("#switch-item-demo").addClass("selected");
 	}	else {
 		hspeed = 1000;
 		mspeed = 1000;
 		dspeed = 1000;
 		updateInterval = 1000;
+		$("#switch-item-now").addClass("selected");
 	}
 }
 
@@ -55,7 +69,7 @@ function getFastModeDate() {
 function clockUpdate() {
 	if(isFastMode) { getFastModeDate(); }
 	else { getNowDate(); }
-  // if(s == 0) {
+  if(isFastMode || s == 0) {
   // 	console.log("change minute needle.");
   	minuteNeedle(m-1, 1);
 	  if(m == 0) {
@@ -73,7 +87,7 @@ function clockUpdate() {
 		  	changeNumPlate();
 		  }
 	  }
-  // }
+  }
 }
 
 function changeNumPlate() {
